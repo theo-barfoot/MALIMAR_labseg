@@ -53,7 +53,7 @@ class Segmenter:
             print('Downloading', name, 'segmentation')
             sequence = name.split('_')[0]
             extension = '.' + '.'.join(name.split('.')[-2:])
-            filename = sequence + '_seg_' + extension
+            filename = sequence + '_seg_' + extension  # todo: why is this _seg_ ?
             filepath = 'temp/segs/' + filename
             seg.download(filepath, verbose=False)
             self.seg_paths[sequence] = filepath
@@ -78,6 +78,7 @@ class Segmenter:
                                   "-l",  "segs.label"], stdout=FNULL, stderr=subprocess.STDOUT)
 
     def upload_segmentations(self):
+        # todo: this uploader only works wih segmentations that have been downloaded and are in seg_paths
         print('Uploading Segmentations')
         for sequence in self.seg_paths:
             name = sequence + '_seg'
