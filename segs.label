@@ -1,0 +1,33 @@
+################################################
+# ITK-SnAP Label Description File
+# File format: 
+# IDX   -R-  -G-  -B-  -A--  VIS MSH  LABEL
+# Fields: 
+#    IDX:   Zero-based index 
+#    -R-:   Red color component (0..255)
+#    -G-:   Green color component (0..255)
+#    -B-:   Blue color component (0..255)
+#    -A-:   Label transparency (0.00 .. 1.00)
+#    VIS:   Label visibility (0 or 1)
+#    IDX:   Label mesh visibility (0 or 1)
+#  LABEL:   Label description 
+################################################
+    0     0    0    0        0  0  0    "Clear Label"
+    1   255    0    0        1  1  1    "Skull"
+    2    60  180   75        1  1  1    "Scapula Right"
+    3   255  255   25        1  1  1    "Scapula Left"
+    4     0  130  200        1  1  1    "Clavicle Right"
+    5   245  130   48        1  1  1    "Clavicle Left"
+    6   255    0  100        1  1  1    "Menubrium + Sternum"
+    7    70  240  240        1  1  1    "Spine Upper"
+    8   240   50  230        1  1  1    "Spine Middle"
+    9   210  245   60        1  1  1    "Spine Lower"
+   10   250  190  190        1  1  1    "Ribs Right"
+   11     0  128  128        1  1  1    "Ribs Left"
+   12   230  190  255        1  1  1    "Iliac Blade Right"
+   13   255  250  200        1  1  1    "Iliac Blade Left"
+   14   170  255  195        1  1  1    "Sacrum"
+   15     0  166  255        1  1  1    "Femur Right"
+   16    55  255    0        1  1  1    "Femur Left"
+   17   128  128    0        1  1  1    "Humerus Right"
+   18   255  215  180        1  1  1    "Humerus Left"
