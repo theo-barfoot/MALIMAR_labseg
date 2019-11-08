@@ -50,7 +50,7 @@ def manually_select_session(project):
         try:
             mr_session = project.experiments[label]
             return mr_session
-        except ValueError:
+        except KeyError:
             print('uh oh')  # todo: get id reentry, maybe check form of ID eg XXXXXX_XXXXXX_.....
 
 

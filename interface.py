@@ -31,6 +31,9 @@ class Segmenter:
         if self.status:
             self.seg = True
             self.download_segmentations()
+        else:
+            self.create_blank_segs()
+            print(self.seg_paths)
 
         self.launch_itk_snap(self.seg)
 
@@ -47,13 +50,19 @@ class Segmenter:
             else:
                 self.image_paths['diffusion'][scan.series_description] = filepath
 
+    def create_blank_segs(self):
+        for sequence in self.seg_paths:
+            filepath = 'temp/segs/' + sequence + '_seg.nii.gz'
+            open(filepath, 'w').close()
+            self.seg_paths[sequence] = filepath
+
     def download_segmentations(self):
         res = self.mr_session.resources['segmentations_' + self.status]
         for name, seg in res.files.items():
             print('Downloading', name, 'segmentation')
             sequence = name.split('_')[0]
             extension = '.' + '.'.join(name.split('.')[-2:])
-            filename = sequence + '_seg_' + extension  # todo: why is this _seg_ ?
+            filename = sequence + '_seg' + extension
             filepath = 'temp/segs/' + filename
             seg.download(filepath, verbose=False)
             self.seg_paths[sequence] = filepath
@@ -78,7 +87,7 @@ class Segmenter:
                                   "-l",  "segs.label"], stdout=FNULL, stderr=subprocess.STDOUT)
 
     def upload_segmentations(self):
-        # todo: this uploader only works wih segmentations that have been downloaded and are in seg_paths
+        # todo: need to put checks in to make sure that the files are not empty and have been saved?
         print('Uploading Segmentations')
         for sequence in self.seg_paths:
             name = sequence + '_seg'
