@@ -1,7 +1,7 @@
 import xnat
 import utils
 import interface
-import sys
+
 colab = 'https://xnatcruk.icr.ac.uk/XNAT_ICR_COLLABORATIONS'
 
 with xnat.connect(server=colab) as connection:
@@ -16,8 +16,9 @@ with xnat.connect(server=colab) as connection:
     user_name_dict = {'tbarfoot': 'theo', 'mhammeed': 'maira'}
     name = user_name_dict[user]
 
-    mr_session = utils.manually_select_session(project)
-    Segmentations = interface.Segmenter(mr_session) # status = False
+    mr_session, status = utils.select_mode(project, name)
+    print(mr_session.label)
+    Segmentations = interface.Segmenter(mr_session, status=status) # status = False
 
     if utils.query_yes_no('Upload segmentation?'):
         if utils.query_yes_no('Segmentation Complete?'):
@@ -29,18 +30,3 @@ with xnat.connect(server=colab) as connection:
 
         Segmentations.upload_segmentations()
 
-
-
-    # todo: finish selection algorithm
-    # if not mr_session:
-    #     mr_session = utils.find_in_progress_segmenation(project, name)
-    #     if not mr_session:
-
-
-
-
-    # print('Starting new segmentation')
-    # for e, experiment in enumerate(project.experiments):
-    #     mr_session = project.experiments[experiment]
-    #     if mr_session.fields['roi_done_theo'] == 'No' and mr_session.fields['roi_done_maira'] == 'No':
-    #         pass  # to be continued
