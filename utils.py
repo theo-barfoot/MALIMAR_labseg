@@ -73,17 +73,28 @@ def count_completed_segs(project):
 
 
 def query_yes_no(question):
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
-    prompt = " [y/n] "
+    options = {'y': True, 'n': False}
+    return query(question, options)
+
+
+def query_phase():
+    options = {'1': 1, '2': 2, '3': 3}
+    return query('Enter Phase', options)
+
+
+def query_disease():
+    options = {'h': 'H', 'f': 'F', 'd': 'D', 'i': 'I'}
+    return query('Enter Disease Category', options)
+
+
+def query(question, options):
     while True:
-        sys.stdout.write(question + prompt)
+        sys.stdout.write(question + ' [' + '/'.join(options) + ']:  ')
         choice = input().lower()
-        if choice in valid:
-            return valid[choice]
+        if choice in options:
+            return options[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
+            sys.stdout.write('Please respond with: ' + ' or '.join(options) + '\n')
 
 
 def find_session_to_check(project):
@@ -100,7 +111,17 @@ def find_session_to_check(project):
     return False
 
 
+def find_session_to_label(project, disease_category):
+    print('Finding case to label with disease category {}'.format(disease_category))
+    for mr_session in project.experiments.values():
+        if (mr_session.fields['disease_labelled_andrea'] == 'No' and
+                mr_session.fields['disease_category'] == disease_category):
+            print('---------------------{}-----------------------'.format(mr_session.label))
+            return mr_session
+
+
 def print_session_vars(mr_session):
+    print('--- Printing Session Variables ---')
     session_vars = ['disease_pattern', 'disease_category', 'dixon_orientation', 'cm_comments',
                     'mk_comments', 'tb_comments', 'response_mk_imwg']
     for var in session_vars:

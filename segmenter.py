@@ -1,6 +1,7 @@
 import xnat
 import utils
 import interface
+import sys
 
 colab = 'https://xnatcruk.icr.ac.uk/XNAT_ICR_COLLABORATIONS'
 
@@ -29,4 +30,12 @@ with xnat.connect(server=colab) as connection:
             mr_session.fields['roi_done_' + name] = 'In Progress'
 
         Segmentations.upload_segmentations()
+
+    sys.stdout.write('TB Comment: ')
+    comment = input()
+    mr_session.fields['tb_comments'] = comment
+
+    sys.stdout.write('Artefacts?: ')
+    comment = input()
+    mr_session.fields['artefact'] = comment
 
