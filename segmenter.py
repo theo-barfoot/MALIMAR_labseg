@@ -19,7 +19,7 @@ with xnat.connect(server=colab) as connection:
 
     mr_session, status = utils.select_mode(project, name)
     print(mr_session.label)
-    Segmentations = interface.Segmenter(mr_session, status=status) # status = False
+    Segmentations = interface.Segmenter(mr_session, status=status)  # status = False
 
     if utils.query_yes_no('Upload segmentation?'):
         if utils.query_yes_no('Segmentation Complete?'):

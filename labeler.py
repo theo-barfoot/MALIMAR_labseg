@@ -6,6 +6,7 @@ colab = 'https://xnatcruk.icr.ac.uk/XNAT_ICR_COLLABORATIONS'
 # going to need: /Applications/ITK-SNAP.app/Contents/bin/install_cmdl.sh my_directory - to be ran on bash to allow
 
 DOWNLOAD_IMAGES = True
+SOURCE = 'RMH'
 
 with xnat.connect(server=colab) as connection:
     user = connection._logged_in_user
@@ -18,7 +19,7 @@ with xnat.connect(server=colab) as connection:
     disease_category = utils.query_disease()
 
     while True:
-        mr_session = utils.find_session_to_label(project, disease_category)
+        mr_session = utils.find_session_to_label(project, disease_category, SOURCE)
         if mr_session:
             utils.print_session_vars(mr_session)
 
@@ -28,15 +29,14 @@ with xnat.connect(server=colab) as connection:
                 Images = interface.Segmenter(mr_session, status=status)
 
             Labels = interface.Labeler(mr_session)
+            Labels.open_crf_template()
 
             if utils.query_yes_no('Disease Labelling Completed?'):
-                Labels.upload_crf()
+                Labels.upload_crf(name=user)
                 mr_session.fields['disease_labelled_andrea'] = 'Yes'
 
-            sys.stdout.write('AR Comment: ')
-            comment = input()
-            mr_session.fields['ar_comments'] = comment
             mr_session.clearcache()
             print('\n\n')
+
         else:
             break

@@ -40,6 +40,17 @@ def select_mode(project, name):
         count_completed_segs(project)
 
 
+def count_completed_crfs(project):
+    crfs = {'F': {'complete': 0, 'total': 0}, 'D': {'complete': 0, 'total': 0},
+            'I': {'complete': 0, 'total': 0}, 'H': {'complete': 0, 'total': 0}}
+    for mr_session in project.experiments.values():
+        crfs[mr_session.fields['disease_category']]['total'] += 1
+        if mr_session.fields['disease_labelled_andrea'] == 'Yes':
+            crfs[mr_session.fields['disease_category']]['complete'] += 1
+
+    return crfs
+
+
 def count_completed_segs(project):
     num_avanto_cor = 0
     total_avanto_cor = 0
@@ -68,8 +79,6 @@ def count_completed_segs(project):
     print('{}/{} Avanto Cor'.format(num_avanto_cor, total_avanto_cor))
     print('{}/{} Avanto Tra'.format(num_avanto_tra, total_avanto_tra))
     print('{}/{} Aera'.format(num_aera, total_aera))
-
-    return False
 
 
 def query_yes_no(question):
@@ -111,26 +120,32 @@ def find_session_to_check(project):
     return False
 
 
-def find_session_to_label(project, disease_category):
+def find_session_to_label(project, disease_category, source):
     print('Finding case to label with disease category {}'.format(disease_category))
     for mr_session in project.experiments.values():
         if (mr_session.fields['disease_labelled_andrea'] == 'No' and
                 mr_session.fields['disease_category'] == disease_category):
-            print('---------------------{}-----------------------'.format(mr_session.label))
-            return mr_session
+            if mr_session.subject.label[:3] == source:
+                print('---------------------{}-----------------------'.format(mr_session.label))
+                return mr_session
+
+    print('All CRFs complete for {}, with disease category {} from {}'.format(project.name, disease_category, source))
 
 
 def print_session_vars(mr_session):
     print('--- Printing Session Variables ---')
     session_vars = ['disease_pattern', 'disease_category', 'dixon_orientation', 'cm_comments',
                     'mk_comments', 'tb_comments', 'response_mk_imwg']
+
+    print('Age =', mr_session.age)
+    print('Gender =', mr_session.subject.demographics.gender)
+    print('Subject ID =', mr_session.subject.label)
+
     for var in session_vars:
         try:
             print(var, '=', mr_session.fields[var])
         except KeyError:
             continue
-
-    print('Age =', mr_session.age)
 
 
 def manually_select_session(project):

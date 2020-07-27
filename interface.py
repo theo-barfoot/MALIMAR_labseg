@@ -18,8 +18,9 @@ class Segmenter:
         self.image_paths = {'dixon': {}, 'diffusion': {}}
         self.seg_paths = {'dixon': None, 'diffusion': None}
 
-        shutil.rmtree('temp', ignore_errors=True)
-        os.mkdir('temp')
+        shutil.rmtree('temp/imgs', ignore_errors=True)
+        shutil.rmtree('temp/segs', ignore_errors=True)
+
         os.mkdir('temp/imgs')
         os.mkdir('temp/segs')
 
@@ -128,19 +129,25 @@ class Segmenter:
 class Labeler:
     def __init__(self, mr_session):
         self.mr_session = mr_session
-        self.open_crf_template()
+
+        shutil.rmtree('temp/labels', ignore_errors=True)
+        os.mkdir('temp/labels')
 
     def open_crf_template(self):
-        filename = 'temp/crf_' + self.mr_session.label + '.xlsx'
+        filename = 'temp/labels/crf_' + self.mr_session.label + '.xlsx'
         shutil.copyfile('crf_template.xlsx', filename)
         FNULL = open(os.devnull, 'w')
         p = subprocess.run(["open", filename], stdout=FNULL, stderr=subprocess.STDOUT)
 
-    def upload_crf(self):
-        dt = datetime.datetime.now().strftime('_%Y%m%d_%H%M%S')
+    def download_crf(self):
+        pass
+
+    def upload_crf(self, *, name, dt=None):
+        if not dt:
+            dt = datetime.datetime.now().strftime('_%Y%m%d_%H%M%S')
         format = 'EXCEL'
-        remotepath = 'crf' + '_andrea' + dt + '.xlsx'
-        localpath = 'temp/crf_' + self.mr_session.label + '.xlsx'
+        remotepath = 'crf_' + name + '_' + dt + '.xlsx'
+        localpath = 'temp/labels/crf_' + self.mr_session.label + '.xlsx'
         label = 'labels'  # folder name
         mr_session = self.mr_session.xnat_session.experiments[self.mr_session.label]
         uri = '{}/resources/{}'.format(mr_session.uri, label)
@@ -148,4 +155,4 @@ class Labeler:
         self.mr_session.clearcache()
         self.mr_session.resources[label].upload(data=localpath, remotepath=remotepath)
         self.mr_session.clearcache()
-        print('CRF uploaded to:', self.mr_session.label)
+        print('CRF uploaded to:', self.mr_session.label, ' As:', remotepath)

@@ -20,6 +20,7 @@ with xnat.connect(server=colab) as connection:
             print('Downloading images and segmentations')
             Segmentations = interface.Segmenter(mr_session, verify=True)
             Labels = interface.Labeler(mr_session)
+            Labels.open_crf_template()
 
             if utils.query_yes_no('Segmentation Checked?'):
                 Segmentations.status = 'verified'
@@ -27,7 +28,7 @@ with xnat.connect(server=colab) as connection:
                 mr_session.fields['roi_signed_off_andrea'] = 'Yes'
 
             if utils.query_yes_no('Disease Labelling Completed?'):
-                Labels.upload_crf()
+                Labels.upload_crf(name='andrea')
                 mr_session.fields['disease_labelled_andrea'] = 'Yes'
 
             sys.stdout.write('AR Comment: ')
