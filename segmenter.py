@@ -11,7 +11,9 @@ with xnat.connect(server=colab) as connection:
     print('Successfully connected to download server: ', connection._original_uri,
           ' as user: ', user)
 
-    project = connection.projects['MALIMAR_PHASE1']
+    phase = utils.query_phase()
+    project = connection.projects['MALIMAR_PHASE{}'.format(phase)]
+
     print('Project: ', project.name)
 
     user_name_dict = {'tbarfoot': 'theo', 'mhammeed': 'maira'}
