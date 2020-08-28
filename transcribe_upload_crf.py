@@ -31,9 +31,10 @@ with xnat.connect(server=colab) as connection:
 
         if utils.query_yes_no('Disease Labelling Completed?'):
             Labels.upload_crf(name=name, dt=dt)
-            mr_session.fields['disease_labelled_andrea'] = 'Yes'
+            mr_session.fields['disease_labelled'] = 'Yes'
 
             mr_session.clearcache()
             print('\n\n')
         else:
+            print('\n\n')
             continue

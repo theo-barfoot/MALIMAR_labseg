@@ -25,7 +25,7 @@ with xnat.connect(server=colab) as connection:
 
             if DOWNLOAD_IMAGES:
                 print('---Downloading Images and Opening in ITK-SNAP---')
-                status = 'verified' if mr_session.fields['roi_signed_off_andrea'] == 'Yes' else False
+                status = 'verified' if mr_session.fields['roi_signed_off'] == 'Yes' else False
                 Images = interface.Segmenter(mr_session, status=status)
 
             Labels = interface.Labeler(mr_session)
@@ -33,7 +33,7 @@ with xnat.connect(server=colab) as connection:
 
             if utils.query_yes_no('Disease Labelling Completed?'):
                 Labels.upload_crf(name=user)
-                mr_session.fields['disease_labelled_andrea'] = 'Yes'
+                mr_session.fields['disease_labelled'] = 'Yes'
 
             mr_session.clearcache()
             print('\n\n')
